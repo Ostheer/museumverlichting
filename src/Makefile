@@ -3,14 +3,14 @@ export CROSS_COMPILE:=arm-linux-gnueabihf
 
 ## Setting library locations
 #Compiling with these works, but then the shared objects can't be found on the rpi. Solved by placing the .so in the /usr/lib/arm... folder on the RPI
-#BOOST_HEADERS = /home/ostheer/rpi/boost_1_67_0 
-#BOOST_OBJECTS = /home/ostheer/rpi/boost_1_67_0/lib
+#BOOST_HEADERS = /home/ostheer/rpi-chain/boost_1_67_0 
+#BOOST_OBJECTS = /home/ostheer/rpi-chain/boost_1_67_0/lib
 #Compiling with these finds boost, but disallows the linker to find pthread. Solved by copying shared objects to /lib/arm... and /usr/lib/arm...
-BOOST_HEADERS = /home/ostheer/rpi/rootfs/usr/include
-BOOST_OBJECTS = /home/ostheer/rpi/rootfs/usr/lib/arm-linux-gnueabihf
+BOOST_HEADERS = /home/ostheer/rpi-chain/rootfs/usr/include
+BOOST_OBJECTS = /home/ostheer/rpi-chain/rootfs/usr/lib/arm-linux-gnueabihf
 #Geral locations containing all(?) shared objects. Telling the linker about these doesnt work. They seem to be ignored entirely
-#USR_LIB_DIR_OBJ = /home/ostheer/rpi/rootfs/usr/lib/arm-linux-gnueabihf
-#LIB_DIR_OBJ = /home/ostheer/rpi/rootfs/lib/arm-linux-gnueabihf
+#USR_LIB_DIR_OBJ = /home/ostheer/rpi-chain/rootfs/usr/lib/arm-linux-gnueabihf
+#LIB_DIR_OBJ = /home/ostheer/rpi-chain/rootfs/lib/arm-linux-gnueabihf
 #Telegrab bot static library
 TGBOT_LIB = /home/ostheer/Documents/nocmakemvil/lib/
 
@@ -18,7 +18,7 @@ TGBOT_LIB = /home/ostheer/Documents/nocmakemvil/lib/
 CXX = ~/rpi-chain/cross-pi-gcc-9.2.0-0/bin/arm-linux-gnueabihf-g++
 CPPFLAGS = -std=c++14 -I./tgbot -I${BOOST_HEADERS} 
 LDFLAGS = 
-#LDFLAGS = --verbose --sysroot=/home/ostheer/rpi/rootfs
+#LDFLAGS = --verbose --sysroot=/home/ostheer/rpi-chain/rootfs
 LDLIBS = -L${TGBOT_LIB} -L${BOOST_OBJECTS} -lrt -lboost_system -lssl -lcrypto -lTgBot -lpthread -ldl
 
 
@@ -45,8 +45,8 @@ clean:
 
 #Solution to some missing standard libraries:
 #I have had to copy these files because I couldn't figure out how on earth to tell the linker to look in a different directory
-#sudo cp	/home/ostheer/rpi/rootfs/usr/lib/arm-linux-gnueabihf/libpthread_nonshared.a	/usr/lib/arm-linux-gnueabihf
-#sudo cp	/home/ostheer/rpi/rootfs/usr/lib/arm-linux-gnueabihf/libc_nonshared.a		/usr/lib/arm-linux-gnueabihf
-#sudo cp	/home/ostheer/rpi/rootfs/lib/arm-linux-gnueabihf/libpthread.so.0		/lib/arm-linux-gnueabihf
-#sudo cp	/home/ostheer/rpi/rootfs/lib/arm-linux-gnueabihf/libc.so.6			/lib/arm-linux-gnueabihf
-#sudo cp	/home/ostheer/rpi/rootfs/lib/arm-linux-gnueabihf/ld-linux-armhf.so.3		/lib/arm-linux-gnueabihf
+#sudo cp	/home/ostheer/rpi-chain/rootfs/usr/lib/arm-linux-gnueabihf/libpthread_nonshared.a	/usr/lib/arm-linux-gnueabihf
+#sudo cp	/home/ostheer/rpi-chain/rootfs/usr/lib/arm-linux-gnueabihf/libc_nonshared.a		/usr/lib/arm-linux-gnueabihf
+#sudo cp	/home/ostheer/rpi-chain/rootfs/lib/arm-linux-gnueabihf/libpthread.so.0		/lib/arm-linux-gnueabihf
+#sudo cp	/home/ostheer/rpi-chain/rootfs/lib/arm-linux-gnueabihf/libc.so.6			/lib/arm-linux-gnueabihf
+#sudo cp	/home/ostheer/rpi-chain/rootfs/lib/arm-linux-gnueabihf/ld-linux-armhf.so.3		/lib/arm-linux-gnueabihf

@@ -12,5 +12,5 @@ https://iweb.dl.sourceforge.net/project/raspberry-pi-cross-compilers/Raspberry%2
 # Environment
 Install any libraries that are necessary for the final program on the Pi before this
 
-* Create the folder `/home/ostheer/rpi/rootfs/`
+* Create the folder `/home/ostheer/rpi-chain/rootfs/`
 * Copy the folders `/usr`, `/lib` and `/opt` from the Raspberry Pi into it
