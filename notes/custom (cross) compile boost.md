@@ -1,7 +1,5 @@
-(stolen from https://github.com/rose-compiler/rose/wiki/Installing-the-compiler-and-boost-from-source)
-
-
 # Install Boost
+This is probably not necessary, as you can use the version compiled on the Pi (via `apt`)
 
 Once you have selected the boost version (we will be using 1_67_0 for this guide) you need to download and extract the source.
 ```
@@ -20,3 +18,6 @@ Finally update the environment variable to find boost.
 ```
 export LD_LIBRARY_PATH="${PREFIX}/boost_1_67_0/install/lib:${LD_LIBRARY_PATH}"
 export BOOST_ROOT="${PREFIX}/boost_1_67_0/install"
+```
+
+(stolen from https://github.com/rose-compiler/rose/wiki/Installing-the-compiler-and-boost-from-source)
