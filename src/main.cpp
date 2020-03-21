@@ -8,24 +8,35 @@
 #include "ws2812/ws2812-rpi.h"
 #include <tgbot.h>
 
+#include <pthread.h>
+
 using namespace std;
 using namespace TgBot;
 
+pthread_t tmp_thread;
+
 int main() {
-    
-    
     string token(getenv("TOKEN"));
     printf("Token: %s\n", token.c_str());
-    
     Bot bot(token);
+    
     bot.getEvents().onCommand("start", [&bot](Message::Ptr message)
     {
         bot.getApi().sendMessage(message->chat->id, "Hi!");
     });
- 
+    
+    bot.getEvents().onCommand("stop", [&bot](Message::Ptr message)
+    {
+        pthread_cancel(tmp_thread);
+    });
+    
     bot.getEvents().onCommand("demo", [&bot](Message::Ptr message)
     {
-        demoleds();
+        
+        
+        pthread_t thread_one;
+        pthread_create(&thread_one, NULL, threadfunc, NULL);
+        
         bot.getApi().sendMessage(message->chat->id, "demo leds");
     });
     
@@ -56,17 +67,18 @@ int main() {
         printf("error: %s\n", e.what());
     }
 
-    
-    twain();
-    
     return 0;
 }
 
-int twain() {
-    printf("In de tween \n");
+void* threadfunc(void* p)  
+{ 
+    // store thread_two id to tmp_thread 
+    tmp_thread = pthread_self();  
+  
     demoleds();
+    
     return 0;
-}
+} 
 
 int demoleds(){
     NeoPixel *n=new NeoPixel(180);
