@@ -1,3 +1,2 @@
-void threadstarter();
-int demoleds();
-void* threadfunc(void* p);
+void* demoleds(void* p);
+void* colour(void* p);

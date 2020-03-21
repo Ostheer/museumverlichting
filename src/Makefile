@@ -23,17 +23,20 @@ LDLIBS = -L${TGBOT_LIB} -L${BOOST_OBJECTS} -lrt -lboost_system -lssl -lcrypto -l
 
 
 ## Targets
-main: main.o ws2812-rpi.o
-	${CXX} $(LDFLAGS) -o main main.o ws2812-rpi.o $(LDLIBS)
+main: main.o ws2812-rpi.o tools.o
+	${CXX} $(LDFLAGS) -o main main.o ws2812-rpi.o tools.o $(LDLIBS)
 
 main.o: main.cpp main.h
 	${CXX} ${CPPFLAGS} -o main.o -c main.cpp
+
+tools.o: tools.cpp tools.h
+	${CXX} ${CPPFLAGS} -o tools.o -c tools.cpp
 
 ws2812-rpi.o: ./ws2812/ws2812-rpi.cpp ./ws2812/ws2812-rpi.h ./ws2812/ws2812-rpi-defines.h
 	${CXX} ${CPPFLAGS} -c -o ws2812-rpi.o ./ws2812/ws2812-rpi.cpp
 
 clean:
-	rm -f main main.o ws2812-rpi.o
+	rm -f main main.o ws2812-rpi.o tools.o
 
 
 ## Comments
