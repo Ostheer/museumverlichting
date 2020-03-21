@@ -11,15 +11,15 @@ BOOST_OBJECTS = /home/ostheer/rpi-chain/rootfs/usr/lib/arm-linux-gnueabihf
 #Geral locations containing all(?) shared objects. Telling the linker about these doesnt work. They seem to be ignored entirely
 #USR_LIB_DIR_OBJ = /home/ostheer/rpi-chain/rootfs/usr/lib/arm-linux-gnueabihf
 #LIB_DIR_OBJ = /home/ostheer/rpi-chain/rootfs/lib/arm-linux-gnueabihf
-#Telegrab bot static library
-TGBOT_LIB =/home/ostheer/Documents/museumverlichting/lib/
+#Local static libraries (locally compiled .a files)
+STATIC_LOCAL_LIBS =/home/ostheer/Documents/museumverlichting/lib/
 
 ## Compiler settings
 CXX = ~/rpi-chain/cross-pi-gcc-9.2.0-0/bin/arm-linux-gnueabihf-g++
-CPPFLAGS = -std=c++14 -I./tgbot -I${BOOST_HEADERS} 
+CPPFLAGS = -std=c++14 -I./tgbot -I${BOOST_HEADERS} -I./ws281x
 LDFLAGS = 
 #LDFLAGS = --verbose --sysroot=/home/ostheer/rpi-chain/rootfs
-LDLIBS = -L${TGBOT_LIB} -L${BOOST_OBJECTS} -lrt -lboost_system -lssl -lcrypto -lTgBot -lpthread -ldl
+LDLIBS = -L${STATIC_LOCAL_LIBS} -L${BOOST_OBJECTS} -lrt -lboost_system -lssl -lcrypto -lTgBot -lpthread -ldl -lws2811
 
 
 ## Targets
