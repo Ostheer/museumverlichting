@@ -47,6 +47,6 @@ clean:
 #I have had to copy these files because I couldn't figure out how on earth to tell the linker to look in a different directory
 #sudo cp	/home/ostheer/rpi-chain/rootfs/usr/lib/arm-linux-gnueabihf/libpthread_nonshared.a	/usr/lib/arm-linux-gnueabihf
 #sudo cp	/home/ostheer/rpi-chain/rootfs/usr/lib/arm-linux-gnueabihf/libc_nonshared.a		/usr/lib/arm-linux-gnueabihf
-#sudo cp	/home/ostheer/rpi-chain/rootfs/lib/arm-linux-gnueabihf/libpthread.so.0		/lib/arm-linux-gnueabihf
+#sudo cp	/home/ostheer/rpi-chain/rootfs/lib/arm-linux-gnueabihf/libpthread.so.0			/lib/arm-linux-gnueabihf
 #sudo cp	/home/ostheer/rpi-chain/rootfs/lib/arm-linux-gnueabihf/libc.so.6			/lib/arm-linux-gnueabihf
 #sudo cp	/home/ostheer/rpi-chain/rootfs/lib/arm-linux-gnueabihf/ld-linux-armhf.so.3		/lib/arm-linux-gnueabihf
