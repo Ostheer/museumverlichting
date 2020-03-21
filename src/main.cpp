@@ -4,12 +4,15 @@
 #include <exception>
 #include <string>
 
-#include "main.h"
+
 #include "ws2812/ws2812-rpi.h"
 #include <tgbot.h>
-#include "tools.h"
 
 #include <pthread.h>
+
+#include "main.h"
+#include "tools.h"
+#include "callbacks.h"
 
 using namespace std;
 using namespace TgBot;
@@ -37,7 +40,9 @@ int main() {
     
     //demo
     bot.getEvents().onCommand("demo", [&bot](Message::Ptr message){
-
+        //stop any currently running thread
+        pthread_cancel(tmp_thread);
+        
         pthread_t t;
         pthread_create(&t, NULL, demoleds, NULL);
         
@@ -46,28 +51,35 @@ int main() {
     
     //colour
     bot.getEvents().onCommand("colour", [&bot](Message::Ptr message){
-        //TODO: stop demo thread if it's running
+        /* Function expects a message shaped "/colour r g b", with 0 < r, g, b < 255 */
+        
+        //stop any currently running thread
+        pthread_cancel(tmp_thread);
+        
+        //split the message
         vector<string> v = split (message->text, ' ');
         
+        //allocate an int vector to store the parameters
         vector<int> L(3);
         try{
+            //convert strings to int
             for (int i = 0; i < 3; i++){
                 L.data()[i] = stoi(v[1+i]);
             }
+            
+            //call the ledstrip function in another thread
+            pthread_t t;
+            pthread_create(&t, NULL, colour, (void *) &L);
+            
+            //reply to the user
+            bot.getApi().sendMessage(message->chat->id, "set colour");
         }
         catch (const invalid_argument& ia) {
-            cout << "Invalid input. Please try again!\n";
+            bot.getApi().sendMessage(message->chat->id, "Invalid colour");
+            cout << "Invalid user message\n";
         }
         
-        /*cout << L.data()[0] << endl;
-        cout << L.data()[1] << endl;
-        cout << L.data()[2] << endl;*/
-        
-        pthread_t t;
-        //pthread_create(&t, NULL, colour, NULL);
-        pthread_create(&t, NULL, colour, (void *) &L);
-        
-        bot.getApi().sendMessage(message->chat->id, "set colour");
+
     });
     
     //anything
@@ -102,36 +114,6 @@ int main() {
     } catch (exception& e) {
         printf("error: %s\n", e.what());
     }
-
-    return 0;
-}
-
-void* demoleds(void* p)  
-{ 
-    tmp_thread = pthread_self();  
-  
-    NeoPixel *n=new NeoPixel(180);
-    while(true) n->effectsDemo();
-    delete n;
-
-    return 0;
-}
-
-void* colour(void* p)  
-{ 
-    tmp_thread = pthread_self();  
-  
-    vector<int> L = *((vector<int> *) p);
-    
-    NeoPixel *n=new NeoPixel(180);
-    
-    for (int i = 0; i < 180; i++){
-        Color_t color(L.data()[0], L.data()[1], L.data()[2]);
-        n->setPixelColor(i, color);
-    }
-    n->show();
-    
-    delete n;
 
     return 0;
 }

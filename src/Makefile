@@ -12,7 +12,7 @@ BOOST_OBJECTS = /home/ostheer/rpi-chain/rootfs/usr/lib/arm-linux-gnueabihf
 #USR_LIB_DIR_OBJ = /home/ostheer/rpi-chain/rootfs/usr/lib/arm-linux-gnueabihf
 #LIB_DIR_OBJ = /home/ostheer/rpi-chain/rootfs/lib/arm-linux-gnueabihf
 #Telegrab bot static library
-TGBOT_LIB = /home/ostheer/Documents/nocmakemvil/lib/
+TGBOT_LIB =/home/ostheer/Documents/museumverlichting/lib/
 
 ## Compiler settings
 CXX = ~/rpi-chain/cross-pi-gcc-9.2.0-0/bin/arm-linux-gnueabihf-g++
@@ -23,11 +23,14 @@ LDLIBS = -L${TGBOT_LIB} -L${BOOST_OBJECTS} -lrt -lboost_system -lssl -lcrypto -l
 
 
 ## Targets
-main: main.o ws2812-rpi.o tools.o
-	${CXX} $(LDFLAGS) -o main main.o ws2812-rpi.o tools.o $(LDLIBS)
+main: main.o ws2812-rpi.o tools.o callbacks.o
+	${CXX} $(LDFLAGS) -o main main.o ws2812-rpi.o tools.o callbacks.o $(LDLIBS)
 
 main.o: main.cpp main.h
 	${CXX} ${CPPFLAGS} -o main.o -c main.cpp
+
+callbacks.o: callbacks.cpp callbacks.h main.h
+	${CXX} ${CPPFLAGS} -o callbacks.o -c callbacks.cpp
 
 tools.o: tools.cpp tools.h
 	${CXX} ${CPPFLAGS} -o tools.o -c tools.cpp
@@ -36,7 +39,7 @@ ws2812-rpi.o: ./ws2812/ws2812-rpi.cpp ./ws2812/ws2812-rpi.h ./ws2812/ws2812-rpi-
 	${CXX} ${CPPFLAGS} -c -o ws2812-rpi.o ./ws2812/ws2812-rpi.cpp
 
 clean:
-	rm -f main main.o ws2812-rpi.o tools.o
+	rm -f main main.o ws2812-rpi.o tools.o callbacks.o
 
 
 ## Comments
