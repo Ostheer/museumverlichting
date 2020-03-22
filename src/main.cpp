@@ -5,7 +5,7 @@
 #include <string>
 #include <pthread.h>
 
-#include "ws2812/ws2812-rpi.h"
+//#include "ws2812/ws2812-rpi.h"
 #include <tgbot.h>
 #include <ws2811.h>
 
@@ -30,7 +30,7 @@ int main() {
     ledstring.channel[0].invert = 0;
     ledstring.channel[0].count = 180;
     ledstring.channel[0].brightness = 255;
-    ledstring.channel[0].strip_type = WS2811_STRIP_RGB;
+    ledstring.channel[0].strip_type = WS2811_STRIP_GRB;
     
     /* Initialise ledstring driver */
     ws2811_return_t ret;
@@ -56,6 +56,17 @@ int main() {
     //stop
     bot.getEvents().onCommand("stop", [&bot](Message::Ptr message){
         pthread_cancel(tmp_thread);
+    });
+
+    //off
+    bot.getEvents().onCommand("off", [&bot](Message::Ptr message){
+        //stop any currently running thread
+        pthread_cancel(tmp_thread);
+        
+        pthread_t t;
+        pthread_create(&t, NULL, off, NULL);
+        
+        bot.getApi().sendMessage(message->chat->id, "Turning everything off");
     });
     
     //demo

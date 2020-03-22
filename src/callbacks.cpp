@@ -1,7 +1,10 @@
 #include <string>
 #include <pthread.h>
+#include <chrono>
+#include <thread>
+#include <vector>
 
-#include "ws2812/ws2812-rpi.h"
+//#include "ws2812/ws2812-rpi.h"
 #include <ws2811.h>
 
 #include "main.h"
@@ -29,20 +32,31 @@ void* colour(void* p)
     
     
     for (int i = 0; i < 180; i++){
-        ledstring.channel[0].leds[i] = 0x0000FF00;
+        ledstring.channel[0].leds[i] = 0x00990033;
     }
     
-    ws2811_render(&ledstring);
-    
-    /*
-    NeoPixel *n=new NeoPixel(180);
+    ws2811_return_t ret;
+    if ((ret = ws2811_render(&ledstring)) != WS2811_SUCCESS)
+    {
+        fprintf(stderr, "ws2811_render failed: %s\n", ws2811_get_return_t_str(ret));
+    }
+
+    return 0;
+}
+
+void* off(void* p)  
+{ 
+    tmp_thread = pthread_self();  
+  
     for (int i = 0; i < 180; i++){
-        Color_t color(L.data()[0], L.data()[1], L.data()[2]);
-        n->setPixelColor(i, color);
+        ledstring.channel[0].leds[i] = 0x00000000;
     }
-    n->show();
-    delete n;
-    */
+
+    ws2811_return_t ret;
+    if ((ret = ws2811_render(&ledstring)) != WS2811_SUCCESS)
+    {
+        fprintf(stderr, "ws2811_render failed: %s\n", ws2811_get_return_t_str(ret));
+    }
     
     return 0;
 }
