@@ -19,7 +19,8 @@ using namespace TgBot;
 pthread_t tmp_thread;
 ws2811_t ledstring;
 
-int main() {
+int main(int argc, char* argv[]) {
+    
     /* Initialise ledstring object */
     ledstring = {};
     ledstring.freq = WS2811_TARGET_FREQ;
@@ -32,6 +33,15 @@ int main() {
     ledstring.channel[0].brightness = 255;
     ledstring.channel[0].strip_type = WS2811_STRIP_GRB;
     
+    /*  Set up bot with token   */
+    if (argc > 1)
+        printf("Token: %s\n", argv[1]);
+    else {
+        cout << "You must supply the token as the first argument." << endl;
+        return 1;
+    }
+    Bot bot(argv[1]);
+    
     /* Initialise ledstring driver */
     ws2811_return_t ret;
     if ((ret = ws2811_init(&ledstring)) != WS2811_SUCCESS)
@@ -39,12 +49,6 @@ int main() {
         fprintf(stderr, "ws2811_init failed: %s\n", ws2811_get_return_t_str(ret));
         return ret;
     }
-    
-    /*  Set up bot with token   */
-    string token(getenv("TOKEN"));
-    printf("Token: %s\n", token.c_str());
-    Bot bot(token);
-    
     
     /*  Message callbacks   */
     
