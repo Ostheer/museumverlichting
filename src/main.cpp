@@ -1,3 +1,4 @@
+#include <iostream>
 #include <csignal>
 #include <cstdio>
 #include <cstdlib>
@@ -16,6 +17,7 @@ using namespace std;
 using namespace TgBot;
 
 pthread_t tmp_thread;
+NeoPixel *n = new NeoPixel(NUM_LEDS);
 
 int main(int argc, char* argv[]) {
     /*  Set up bot with token   */
@@ -85,6 +87,39 @@ int main(int argc, char* argv[]) {
             
             //reply to the user
             bot.getApi().sendMessage(message->chat->id, "set colour");
+        }
+        catch (const invalid_argument& ia) {
+            bot.getApi().sendMessage(message->chat->id, "Invalid colour");
+            cout << "Invalid user message\n";
+        }
+        
+
+    });
+    
+    //horizontalPulse
+    bot.getEvents().onCommand("pulse", [&bot](Message::Ptr message){
+        /* Function expects a message shaped "/pulse r g b", with 0 < r, g, b < 255 */
+        
+        //stop any currently running thread
+        pthread_cancel(tmp_thread);
+        
+        //split the message
+        vector<string> v = split (message->text, ' ');
+        
+        //allocate an int vector to store the parameters
+        vector<int> L(3);
+        try{
+            //convert strings to int
+            for (int i = 0; i < 3; i++){
+                L.data()[i] = stoi(v[1+i]);
+            }
+            
+            //call the ledstrip function in another thread
+            pthread_t t;
+            pthread_create(&t, NULL, horizontalPulse, (void *) &L);
+            
+            //reply to the user
+            bot.getApi().sendMessage(message->chat->id, "starting Horizontal Pulse");
         }
         catch (const invalid_argument& ia) {
             bot.getApi().sendMessage(message->chat->id, "Invalid colour");
