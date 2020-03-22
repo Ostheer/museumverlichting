@@ -20,22 +20,6 @@ void* demoleds(void* p)
     return 0;
 }
 
-void* matrix(void* p)  
-{ 
-    tmp_thread = pthread_self();  
-
-    while (true){
-        for (int i = 0; i < NUM_ROWS; i++){
-        for (int j = 0; j < NUM_COLS; j++){
-            Color_t color(0,0,0);
-            n->setPixelColor(i, color);
-        }
-        }
-        n->show();
-    }
-
-    return 0;
-}
 
 void* horizontalPulse(void* p)  
 { 
@@ -101,6 +85,17 @@ void* off(void* p)
     }
     n->show();
 
+
+    return 0;
+}
+
+void* rainbow(void* p)
+{ 
+    tmp_thread = pthread_self();  
+
+    int L = *((int *) p);
+
+    while(true) n->rainbowCycle(L);
 
     return 0;
 }

@@ -66,67 +66,103 @@ int main(int argc, char* argv[]) {
     //colour
     bot.getEvents().onCommand("colour", [&bot](Message::Ptr message){
         /* Function expects a message shaped "/colour r g b", with 0 < r, g, b < 255 */
-        
         //stop any currently running thread
         pthread_cancel(tmp_thread);
-        
         //split the message
         vector<string> v = split (message->text, ' ');
-        
-        //allocate an int vector to store the parameters
-        vector<int> L(3);
-        try{
-            //convert strings to int
-            for (int i = 0; i < 3; i++){
-                L.data()[i] = stoi(v[1+i]);
-            }
-            
-            //call the ledstrip function in another thread
-            pthread_t t;
-            pthread_create(&t, NULL, colour, (void *) &L);
-            
-            //reply to the user
-            bot.getApi().sendMessage(message->chat->id, "set colour");
-        }
-        catch (const invalid_argument& ia) {
-            bot.getApi().sendMessage(message->chat->id, "Invalid colour");
-            cout << "Invalid user message\n";
-        }
-        
 
+        
+        if (v.size() > 3){
+            //allocate an int vector to store the parameters
+            vector<int> L(3);
+            try{
+                //convert strings to int
+                for (int i = 0; i < 3; i++){
+                    L.data()[i] = stoi(v[1+i]);
+                }
+                //call the ledstrip function in another thread
+                pthread_t t;
+                pthread_create(&t, NULL, colour, (void *) &L);
+                //reply to the user
+                bot.getApi().sendMessage(message->chat->id, "set colour");
+            }
+            catch (const invalid_argument& ia) {
+                bot.getApi().sendMessage(message->chat->id, "Invalid colour");
+                cout << "Invalid user message\n";
+            }
+        }
+        else{
+            bot.getApi().sendMessage(message->chat->id, "Not enough arguments");
+            cout << "Not enough arguments" << endl;
+        }
     });
     
     //horizontalPulse
     bot.getEvents().onCommand("pulse", [&bot](Message::Ptr message){
         /* Function expects a message shaped "/pulse r g b", with 0 < r, g, b < 255 */
-        
         //stop any currently running thread
         pthread_cancel(tmp_thread);
-        
         //split the message
         vector<string> v = split (message->text, ' ');
-        
-        //allocate an int vector to store the parameters
-        vector<int> L(3);
-        try{
-            //convert strings to int
-            for (int i = 0; i < 3; i++){
-                L.data()[i] = stoi(v[1+i]);
-            }
-            
-            //call the ledstrip function in another thread
-            pthread_t t;
-            pthread_create(&t, NULL, horizontalPulse, (void *) &L);
-            
-            //reply to the user
-            bot.getApi().sendMessage(message->chat->id, "starting Horizontal Pulse");
-        }
-        catch (const invalid_argument& ia) {
-            bot.getApi().sendMessage(message->chat->id, "Invalid colour");
-            cout << "Invalid user message\n";
-        }
-        
 
+        if (v.size() > 3){
+            //allocate an int vector to store the parameters
+            vector<int> L(3);
+            try{
+                //convert strings to int
+                for (int i = 0; i < 3; i++){
+                    L.data()[i] = stoi(v[1+i]);
+                }
+                
+                //call the ledstrip function in another thread
+                pthread_t t;
+                pthread_create(&t, NULL, horizontalPulse, (void *) &L);
+                
+                //reply to the user
+                bot.getApi().sendMessage(message->chat->id, "starting Horizontal Pulse");
+            }
+            catch (const invalid_argument& ia) {
+                bot.getApi().sendMessage(message->chat->id, "Invalid colour");
+                cout << "Invalid arguments." << endl;
+            }
+        }
+        else{
+            bot.getApi().sendMessage(message->chat->id, "Not enough arguments");
+            cout << "Not enough arguments" << endl;
+        }
+    });
+    
+    //Rainbow
+    bot.getEvents().onCommand("rainbow", [&bot](Message::Ptr message){
+        /* Function expects a message shaped "/rainbow t" */
+        //stop any currently running thread
+        pthread_cancel(tmp_thread);
+        //split the message
+        vector<string> v = split (message->text, ' ');
+
+        if (v.size() > 1){
+            //allocate an int vector to store the parameters
+            vector<int> L(1);
+            try{
+                //convert strings to int
+                L.data()[0] = stoi(v[1]);
+                
+                //call the ledstrip function in another thread
+                pthread_t t;
+                pthread_create(&t, NULL, rainbow, (void *) &L);
+                
+                //reply to the user
+                bot.getApi().sendMessage(message->chat->id, "starting Rainbow");
+            }
+            catch (const invalid_argument& ia) {
+                bot.getApi().sendMessage(message->chat->id, "Invalid time");
+                cout << "Invalid arguments." << endl;
+            }
+        }
+        else{
+            bot.getApi().sendMessage(message->chat->id, "Not enough arguments");
+            cout << "Not enough arguments" << endl;
+        }
     });
     
     //anything
