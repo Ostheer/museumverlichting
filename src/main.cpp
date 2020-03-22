@@ -5,9 +5,8 @@
 #include <string>
 #include <pthread.h>
 
-//#include "ws2812/ws2812-rpi.h"
+#include "ws2812/ws2812-rpi.h"
 #include <tgbot.h>
-#include <ws2811.h>
 
 #include "main.h"
 #include "tools.h"
@@ -17,22 +16,8 @@ using namespace std;
 using namespace TgBot;
 
 pthread_t tmp_thread;
-ws2811_t ledstring;
 
 int main(int argc, char* argv[]) {
-    
-    /* Initialise ledstring object */
-    ledstring = {};
-    ledstring.freq = WS2811_TARGET_FREQ;
-    ledstring.dmanum = 10;
-    ledstring.channel[1] = {};
-    ledstring.channel[0] = {};
-    ledstring.channel[0].gpionum = 10;
-    ledstring.channel[0].invert = 0;
-    ledstring.channel[0].count = 180;
-    ledstring.channel[0].brightness = 255;
-    ledstring.channel[0].strip_type = WS2811_STRIP_GRB;
-    
     /*  Set up bot with token   */
     if (argc > 1)
         printf("Token: %s\n", argv[1]);
@@ -41,14 +26,6 @@ int main(int argc, char* argv[]) {
         return 1;
     }
     Bot bot(argv[1]);
-    
-    /* Initialise ledstring driver */
-    ws2811_return_t ret;
-    if ((ret = ws2811_init(&ledstring)) != WS2811_SUCCESS)
-    {
-        fprintf(stderr, "ws2811_init failed: %s\n", ws2811_get_return_t_str(ret));
-        return ret;
-    }
     
     /*  Message callbacks   */
     
@@ -132,7 +109,6 @@ int main(int argc, char* argv[]) {
     
     signal(SIGINT, [](int s) {
         printf("SIGINT got\n");
-        ws2811_fini(&ledstring);
         exit(0);
     });
     
@@ -151,7 +127,6 @@ int main(int argc, char* argv[]) {
         printf("error: %s\n", e.what());
     }
 
-    ws2811_fini(&ledstring);
     return 0;
 }
 

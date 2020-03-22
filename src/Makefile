@@ -16,10 +16,10 @@ STATIC_LOCAL_LIBS =/home/ostheer/Documents/museumverlichting/lib/
 
 ## Compiler settings
 CXX = ~/rpi-chain/cross-pi-gcc-9.2.0-0/bin/arm-linux-gnueabihf-g++
-CPPFLAGS = -std=c++14 -I./tgbot -I${BOOST_HEADERS} -I./ws281x
+CPPFLAGS = -std=c++14 -I./tgbot -I${BOOST_HEADERS}
 LDFLAGS = 
 #LDFLAGS = --verbose --sysroot=/home/ostheer/rpi-chain/rootfs
-LDLIBS = -L${STATIC_LOCAL_LIBS} -L${BOOST_OBJECTS} -lrt -lboost_system -lssl -lcrypto -lTgBot -lpthread -ldl -lws2811
+LDLIBS = -L${STATIC_LOCAL_LIBS} -L${BOOST_OBJECTS} -lrt -lboost_system -lssl -lcrypto -lTgBot -lpthread -ldl
 
 
 ## Targets
