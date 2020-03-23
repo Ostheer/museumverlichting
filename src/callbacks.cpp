@@ -64,35 +64,40 @@ void* horizontalPulse(void* p)
 
 void* randomPulses(void* p)
 {
+    /* Do some setup */
     tmp_thread = pthread_self();  
+    srand (time(NULL));
     
-    int N = 0;
-    const int frame_delay = 30;
-    const int pulseLength = 13;
-    float gauss[pulseLength] = {0,0.043937,0.135335,0.324652,0.606531,0.882497,1.000000,0.882497,0.606531,0.324652,0.135335,0.043937,0};
+    //pulse creation percentage (from user)
+    const int frame_delay = 5;
+    vector<int> L = *((vector<int> *) p);
+    int creationDivisor = (1000*1000/frame_delay)/(frame_delay*L.data()[0]); //1000 ms / s
+    if (creationDivisor < 2) creationDivisor = 2;
+    cout << "Creation divisor is " << creationDivisor << endl;
     
+    //set up variables
     Color_t buffer[NUM_COLS][NUM_ROWS];
     for (int i = 0; i < NUM_ROWS; i++){
         for (int j = 0; j < NUM_COLS; j++){
-            Color_t color(0,0,0);;
+            Color_t color(0,0,0);
             buffer[i][j] = color;
         }
     }
     Color_t* rowbuffer;
-    
     node* head = nullptr;
     node* current = head;
     node* temp;
     
-    srand (time(NULL));
+    //for now, hardcoded profile
+    const int pulseLength = 13;
+    float gauss[pulseLength] = {0,0.043937,0.135335,0.324652,0.606531,0.882497,1.000000,0.882497,0.606531,0.324652,0.135335,0.043937,0};
     
+    /* Begin main loop */
     while (true){
         /* Remove dead pulses */
         current = head;
         while (current != nullptr){
-            //cout << "Looking for dead pulses" << endl;
             if (current->pulse->finished){
-                //cout << "Checking if head was finished" << endl;
                 if (current == head) head = head->next;
                 
                 //cout << "Removing finished pulse from chain" << endl;
@@ -104,9 +109,6 @@ void* randomPulses(void* p)
                 delete current->pulse;
                 delete current;
                 current = temp;
-                //cout << "Pulse deleted." << endl;
-                
-                N--;
             }
             if (current != nullptr) current = current->next;
         }
@@ -114,33 +116,22 @@ void* randomPulses(void* p)
         /* Draw all pulses */
         current = head;
         while (current != nullptr){
-            //cout << "Drawing pulse" << endl;
             rowbuffer = current->pulse->draw();
             for (int i = 0; i < NUM_COLS; i++) buffer[i][current->row] = colorAdd(rowbuffer[i], buffer[i][current->row]);
             current = current->next;
         }
         
-
-        /* Write buffers to ledstrip */
-        //cout << "write buffers" << endl;
+        /* Write buffers to ledstrip and render */
         for (int i = 0; i < NUM_ROWS; i++){
             for (int j = 0; j < NUM_COLS; j++){
                 n->setPixelColor(j + i*NUM_COLS, buffer[j][i]);
             }
         }
-        
-        /* render the changes */
-        //cout << "render leds" << endl;
         n->show();
         
         /* Create new pulse at random */
-        if (rand() % 50 == 1){
-            //cout << "making pulse" << endl;
-            N++;
-            //cout << "Number of pulses: " << N << endl;
-            Color_t color(rand()%256, rand()%256, rand()%256);
-            
-            //cout << "Looking for last element" << endl;
+        if (rand() % creationDivisor == 1){
+            // Looking for last element
             current = head;
             temp = head;
             while (current != nullptr){
@@ -149,7 +140,7 @@ void* randomPulses(void* p)
             }
             current = temp;
             
-            //cout << "making node" << endl;
+            // Make new objects
             temp = new node;
             if (current != nullptr){
                 current->next = temp;
@@ -161,10 +152,10 @@ void* randomPulses(void* p)
             }
             temp->next = nullptr;
             
-            //cout << "making new pulse object" << endl;
-            temp->pulse = new Pulse(rand()%60, pulseLength, rand()%2 ,color, gauss);
-            temp->row = rand()%4;
-            
+            // Providing random parameters
+            Color_t color(rand()%256, rand()%256, rand()%256);
+            temp->pulse = new Pulse(10 + rand()%40, pulseLength, rand()%2 ,color, gauss);
+            temp->row = rand()%NUM_ROWS;
         }
         
         /* clear buffer */
@@ -177,7 +168,7 @@ void* randomPulses(void* p)
         }
         
         /* Wait */
-        std::this_thread::sleep_for(std::chrono::milliseconds(1000/100));
+        std::this_thread::sleep_for(std::chrono::milliseconds(frame_delay));
     }
 
     return 0;
@@ -217,9 +208,9 @@ void* rainbow(void* p)
 { 
     tmp_thread = pthread_self();  
 
-    int L = *((int *) p);
+    vector<int> L = *((vector<int> *) p);
 
-    while(true) n->rainbowCycle(L);
+    while(true) n->rainbowCycle(L.data()[0]);
 
     return 0;
 }

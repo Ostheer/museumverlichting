@@ -62,16 +62,43 @@ int main(int argc, char* argv[]) {
         
         bot.getApi().sendMessage(message->chat->id, "demo leds");
     });
-    
-    //demo
+
+    //random
     bot.getEvents().onCommand("random", [&bot](Message::Ptr message){
+        /* Function expects a message shaped "/random t" */
         //stop any currently running thread
         pthread_cancel(tmp_thread);
-        
-        pthread_t t;
-        pthread_create(&t, NULL, randomPulses, NULL);
-        
-        bot.getApi().sendMessage(message->chat->id, "Random pulses");
+        //split the message
+        vector<string> v = split (message->text, ' ');
+
+        if (v.size() > 1){
+            
+            //allocate an int vector to store the parameters
+            vector<int> L(1);
+            try{
+                //convert strings to int
+                L.data()[0] = stoi(v[1]);
+                
+                //call the ledstrip function in another thread
+                pthread_t t;
+                pthread_create(&t, NULL, randomPulses, (void *) &L);
+                
+                //reply to the user
+                bot.getApi().sendMessage(message->chat->id, "starting random pulses");
+            }
+            catch (const invalid_argument& ia) {
+                bot.getApi().sendMessage(message->chat->id, "Invalid creation ");
+                cout << "Invalid arguments." << endl;
+            }
+            catch(const out_of_range& e){
+                bot.getApi().sendMessage(message->chat->id, "Invalid creation ");
+                cout << "Invalid arguments." << endl;
+            }
+        }
+        else{
+            bot.getApi().sendMessage(message->chat->id, "Not enough arguments");
+            cout << "Not enough arguments" << endl;
+        }
     });
     
     //colour
@@ -100,6 +127,10 @@ int main(int argc, char* argv[]) {
             catch (const invalid_argument& ia) {
                 bot.getApi().sendMessage(message->chat->id, "Invalid colour");
                 cout << "Invalid user message\n";
+            }
+            catch(const out_of_range& e){
+                bot.getApi().sendMessage(message->chat->id, "Invalid creation ");
+                cout << "Invalid arguments." << endl;
             }
         }
         else{
@@ -167,6 +198,10 @@ int main(int argc, char* argv[]) {
             }
             catch (const invalid_argument& ia) {
                 bot.getApi().sendMessage(message->chat->id, "Invalid time");
+                cout << "Invalid arguments." << endl;
+            }
+            catch(const out_of_range& e){
+                bot.getApi().sendMessage(message->chat->id, "Invalid creation ");
                 cout << "Invalid arguments." << endl;
             }
         }

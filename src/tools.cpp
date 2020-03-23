@@ -56,7 +56,6 @@ Pulse::Pulse (int a, int b, bool c, Color_t d, float* e) {
 }
 
 Color_t* Pulse::draw() {
-    
     unsigned long time = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
     
     if (time - lastDrawn > delay){
@@ -68,7 +67,6 @@ Color_t* Pulse::draw() {
                     case true: state[NUM_COLS-1 - location] = color; break;
                     case false: state[location] = color; break;
                 }
-                //buffer[location] = colorAdd(buffer[location], color);
             }
             
         }
