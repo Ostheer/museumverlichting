@@ -63,6 +63,17 @@ int main(int argc, char* argv[]) {
         bot.getApi().sendMessage(message->chat->id, "demo leds");
     });
     
+    //demo
+    bot.getEvents().onCommand("random", [&bot](Message::Ptr message){
+        //stop any currently running thread
+        pthread_cancel(tmp_thread);
+        
+        pthread_t t;
+        pthread_create(&t, NULL, randomPulses, NULL);
+        
+        bot.getApi().sendMessage(message->chat->id, "Random pulses");
+    });
+    
     //colour
     bot.getEvents().onCommand("colour", [&bot](Message::Ptr message){
         /* Function expects a message shaped "/colour r g b", with 0 < r, g, b < 255 */
