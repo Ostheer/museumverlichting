@@ -65,8 +65,8 @@ Color_t* Pulse::draw() {
             if (location >= 0 && location < NUM_COLS){
                 Color_t color(profile[p]*pcolor.r, profile[p]*pcolor.g, profile[p]*pcolor.b);
                 switch (direction){
-                    case true: state[NUM_COLS-1 - location] = color;
-                    case false: state[location] = color;
+                    case true: state[NUM_COLS-1 - location] = color; break;
+                    case false: state[location] = color; break;
                 }
                 //buffer[location] = colorAdd(buffer[location], color);
             }

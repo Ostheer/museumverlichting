@@ -116,7 +116,7 @@ void* randomPulses(void* p)
         while (current != nullptr){
             //cout << "Drawing pulse" << endl;
             rowbuffer = current->pulse->draw();
-            for (int i = 0; i < NUM_COLS; i++) buffer[i][current->row] = rowbuffer[i];
+            for (int i = 0; i < NUM_COLS; i++) buffer[i][current->row] = colorAdd(rowbuffer[i], buffer[i][current->row]);
             current = current->next;
         }
         
@@ -162,7 +162,7 @@ void* randomPulses(void* p)
             temp->next = nullptr;
             
             //cout << "making new pulse object" << endl;
-            temp->pulse = new Pulse(frame_delay, pulseLength, rand()%2 ,color, gauss);
+            temp->pulse = new Pulse(rand()%60, pulseLength, rand()%2 ,color, gauss);
             temp->row = rand()%4;
             
         }
