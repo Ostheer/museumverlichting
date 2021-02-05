@@ -60,7 +60,7 @@ Color_t* Pulse::draw() {
     
     if (time - lastDrawn > delay){
         for (int p = 0; p < size; p++){
-            location = phase - size + p;
+            location = phase+1 - size + p;
             if (location >= 0 && location < NUM_COLS){
                 Color_t color(profile[p]*pcolor.r, profile[p]*pcolor.g, profile[p]*pcolor.b);
                 switch (direction){
